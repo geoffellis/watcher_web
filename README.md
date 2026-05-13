@@ -1,6 +1,10 @@
 # 🕵️ Watcher
 
+<<<<<<< HEAD
 A self-hosted, real-time video surveillance dashboard designed for monitoring local camera footage. It features a premium "Cyberpunk Glass" UI, real-time filesystem synchronization, and intelligent thumbnail generation.
+=======
+A self-hosted, real-time video surveillance dashboard designed for monitoring local camera footage (Arlo/Ring style). It features a premium "Cyberpunk Glass" UI, real-time filesystem synchronization, and intelligent thumbnail generation.
+>>>>>>> 8d59caedb261e1595f6ad3cac3364ae6a6c87db5
 
 ![Watcher UI](https://img.shields.io/badge/UI-Glassmorphism-blue)
 ![Backend](https://img.shields.io/badge/Backend-Node.js-green)
