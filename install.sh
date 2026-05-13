@@ -4,20 +4,23 @@
 echo "--- Arlo Watcher Installation ---"
 
 # 1. Check for NVM
-if [ -z "$NVM_DIR" ]; then
-    export NVM_DIR="$HOME/.nvm"
-fi
-
-if [ ! -s "$NVM_DIR/nvm.sh" ]; then
-    echo "Installing NVM..."
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+if ! command -v nvm &> /dev/null; then
+    if [ -z "$NVM_DIR" ]; then export NVM_DIR="$HOME/.nvm"; fi
+    if [ -s "$NVM_DIR/nvm.sh" ]; then
+        \. "$NVM_DIR/nvm.sh"
+    else
+        echo "Installing NVM..."
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    fi
 fi
 
 # 2. Setup Node
-echo "Setting up Node.js..."
-nvm install --lts
-nvm use --lts
+echo "Verifying Node.js..."
+if ! command -v node &> /dev/null; then
+    nvm install --lts
+    nvm use --lts
+fi
 
 # 3. Install NPM dependencies
 echo "Installing dependencies..."
