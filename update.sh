@@ -1,24 +1,49 @@
 #!/bin/bash
-# Arlo Watcher - Update Script
 
-echo "--- Updating Arlo Watcher ---"
+# Watcher - Automated Update Script
+# Aligned with hardened /opt installation standards.
 
-# 1. Pull latest from git
-echo "Pulling latest changes..."
-git pull
+set -e
 
-# 2. Setup Node environment
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-nvm use --lts
+INSTALL_DIR="/opt/watcher"
+APP_USER="watcher"
 
-# 3. Update dependencies
-echo "Updating dependencies..."
-npm install
+if [ "$PWD" != "$INSTALL_DIR" ]; then
+    echo "⚠️  Moving to $INSTALL_DIR..."
+    cd "$INSTALL_DIR"
+fi
 
-# 4. Restart service
-echo "Restarting service..."
-sudo systemctl restart watcher-web
+# Capture absolute path to npm
+NPM_BIN=$(which npm)
+echo "✅ Node.js $(node -v) OK ($NPM_BIN)"
 
-echo "--- Update Complete ---"
-sudo systemctl status watcher-web --no-pager
+echo "🔄 Pulling latest changes from Git..."
+sudo git pull
+
+# 1. Update Node Dependencies
+echo "📦 Syncing Node dependencies..."
+sudo env PATH="$PATH" "$NPM_BIN" install --quiet
+
+# 2. Update Python venv (if exists)
+if [ -d "venv" ]; then
+    echo "🐍 Refreshing Python venv..."
+    # Placeholder for requirements if you add them later
+    # sudo ./venv/bin/pip install -r requirements.txt
+fi
+
+# 3. Finalize Permissions
+echo "🔒 Refreshing permissions..."
+sudo chown -R $APP_USER:$APP_USER "$INSTALL_DIR"
+if [ -f "tags.json" ]; then
+    sudo chmod 664 "tags.json"
+fi
+
+# 4. Restart the Service
+echo "♻️  Restarting Watcher service..."
+sudo systemctl restart watcher
+
+echo ""
+echo "✨ Update Complete! Watcher is now running the latest version."
+echo "--------------------------------------------------------"
+echo "Status: $(sudo systemctl is-active watcher)"
+echo "--------------------------------------------------------"
