@@ -3,34 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arlo Watcher</title>
+    <title>Watcher</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="app-container">
-        <!-- Top Navigation / Filter Bar -->
+        <div id="sidebar-overlay" class="sidebar-overlay hidden"></div>
         <header class="top-nav">
-            <div class="logo">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"></path><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
-                <h1>Arlo Watcher</h1>
+            <div class="header-left">
+                <button id="btn-mobile-menu" class="icon-btn mobile-only" title="Open Menu">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                </button>
+                <div class="logo">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                    <h1>Watcher</h1>
+                </div>
             </div>
             
             <div class="filter-controls">
                 <div class="filter-group">
-                    <button id="btn-filter-all" class="filter-btn active">All Events</button>
+                    <button id="btn-filter-all" class="filter-btn active">All<span class="desktop-only">&nbsp;Events</span></button>
                     <button id="btn-filter-person" class="filter-btn">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                        Person Detected
+                        Person<span class="desktop-only">&nbsp;Detected</span>
                     </button>
                 </div>
                 
-                <div class="filter-group">
+                <div class="filter-group desktop-only">
                     <span id="date-filter-label" class="date-label">All Dates</span>
                     <button id="btn-clear-date" class="icon-btn hidden" title="Clear Dates">&times;</button>
                 </div>
                 
-                <div class="filter-group">
+                <div class="filter-group desktop-only">
                     <input type="text" id="search-filter" class="search-input" placeholder="Search files...">
                 </div>
 
@@ -42,6 +47,10 @@
                     <span class="toggle-label">Highlights</span>
                 </div>
                 
+                <button id="btn-toggle-size" class="icon-btn" title="Toggle Card Size">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                </button>
+                
                 <button id="theme-toggle" class="icon-btn" title="Toggle Theme">
                     <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
                 </button>
@@ -50,7 +59,21 @@
 
         <div class="main-layout">
             <!-- Sidebar (Desktop) / Bottom Nav (Mobile) -->
-            <aside class="sidebar">
+            <aside id="sidebar" class="sidebar">
+                <div class="sidebar-header mobile-only">
+                    <h3>Menu</h3>
+                    <button id="btn-close-sidebar" class="icon-btn" title="Close Menu">&times;</button>
+                </div>
+                <div class="sidebar-section mobile-only">
+                    <h3>Search & Filter</h3>
+                    <div class="filter-vertical">
+                        <input type="text" id="search-filter-mobile" class="search-input-mobile" placeholder="Search files...">
+                        <div class="date-status-mobile">
+                            <span id="date-filter-label-mobile" class="date-label">All Dates</span>
+                            <button id="btn-clear-date-mobile" class="icon-btn hidden" title="Clear Dates">&times;</button>
+                        </div>
+                    </div>
+                </div>
                 <div class="sidebar-section">
                     <h3>Calendar</h3>
                     <div id="calendar-widget" class="calendar-widget">

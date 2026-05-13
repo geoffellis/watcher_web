@@ -5,6 +5,7 @@ let currentFilter = 'all'; // 'all', 'person'
 let selectedDates = new Set();
 let searchQuery = '';
 let showHighlights = true;
+let cardSize = window.innerWidth > 900 ? 'small' : 'large';
 
 // Thumbnail Observer (Lazy load non-person thumbnails)
 const thumbnailObserver = new IntersectionObserver((entries, observer) => {
@@ -110,6 +111,7 @@ function applyFilters() {
 // Render UI
 function renderGrid() {
     loadingState.classList.add('hidden');
+    videoGrid.className = `video-grid size-${cardSize}`;
     videoGrid.innerHTML = '';
     
     if (filteredVideos.length === 0) {
@@ -178,6 +180,10 @@ function updateStats() {
         label = `${selectedDates.size} Days Selected`;
     }
     document.getElementById('stats-date-label').textContent = label;
+    const mobileLabel = document.getElementById('date-filter-label-mobile');
+    if (mobileLabel) mobileLabel.textContent = label;
+    const desktopLabel = document.getElementById('date-filter-label');
+    if (desktopLabel) desktopLabel.textContent = label;
 }
 
 function updateActivityGraph() {
@@ -418,19 +424,31 @@ function renderCalendar() {
                 }
                 
                 const clearDate = document.getElementById('btn-clear-date');
+                const clearDateMobile = document.getElementById('btn-clear-date-mobile');
                 const dateLabel = document.getElementById('date-filter-label');
-                clearDate.classList.toggle('hidden', selectedDates.size === 0);
+                const dateLabelMobile = document.getElementById('date-filter-label-mobile');
                 
-                if (selectedDates.size === 0) {
-                    dateLabel.textContent = 'All Dates';
-                } else if (selectedDates.size === 1) {
-                    dateLabel.textContent = Array.from(selectedDates)[0];
-                } else {
-                    dateLabel.textContent = `${selectedDates.size} Days`;
+                const hasSelected = selectedDates.size > 0;
+                if (clearDate) clearDate.classList.toggle('hidden', !hasSelected);
+                if (clearDateMobile) clearDateMobile.classList.toggle('hidden', !hasSelected);
+                
+                let label = 'All Dates';
+                if (selectedDates.size === 1) {
+                    label = Array.from(selectedDates)[0];
+                } else if (selectedDates.size > 1) {
+                    label = `${selectedDates.size} Days`;
                 }
+                
+                if (dateLabel) dateLabel.textContent = label;
+                if (dateLabelMobile) dateLabelMobile.textContent = label;
                 
                 applyFilters();
                 renderCalendar();
+                // Close sidebar on mobile after selection
+                if (window.innerWidth <= 900) {
+                    document.getElementById('sidebar').classList.remove('open');
+                    document.getElementById('sidebar-overlay').classList.add('hidden');
+                }
             });
         } else {
             div.classList.add('disabled');
@@ -482,15 +500,36 @@ function setupEventListeners() {
     
     // Date filter
     const clearDate = document.getElementById('btn-clear-date');
+    const clearDateMobile = document.getElementById('btn-clear-date-mobile');
     const dateLabel = document.getElementById('date-filter-label');
+    const dateLabelMobile = document.getElementById('date-filter-label-mobile');
     
-    clearDate.addEventListener('click', () => {
+    const resetDates = () => {
         selectedDates.clear();
-        clearDate.classList.add('hidden');
-        dateLabel.textContent = 'All Dates';
+        if (clearDate) clearDate.classList.add('hidden');
+        if (clearDateMobile) clearDateMobile.classList.add('hidden');
+        if (dateLabel) dateLabel.textContent = 'All Dates';
+        if (dateLabelMobile) dateLabelMobile.textContent = 'All Dates';
         applyFilters();
         renderCalendar();
-    });
+    };
+
+    if (clearDate) clearDate.addEventListener('click', resetDates);
+    if (clearDateMobile) clearDateMobile.addEventListener('click', resetDates);
+    
+    // Search
+    const searchInput = document.getElementById('search-filter');
+    const searchInputMobile = document.getElementById('search-filter-mobile');
+    
+    const handleSearch = (e) => {
+        searchQuery = e.target.value;
+        if (searchInput) searchInput.value = searchQuery;
+        if (searchInputMobile) searchInputMobile.value = searchQuery;
+        applyFilters();
+    };
+
+    if (searchInput) searchInput.addEventListener('input', handleSearch);
+    if (searchInputMobile) searchInputMobile.addEventListener('input', handleSearch);
     
     // Highlights Toggle
     document.getElementById('toggle-highlights').addEventListener('change', (e) => {
@@ -500,6 +539,31 @@ function setupEventListeners() {
             const video = filteredVideos[currentVideoIndex];
             if (video) drawBoundingBoxes(video.bounding_boxes);
         }
+    });
+    
+    // Card Size Toggle
+    document.getElementById('btn-toggle-size').addEventListener('click', () => {
+        cardSize = cardSize === 'small' ? 'large' : 'small';
+        renderGrid();
+    });
+    
+    // Mobile Menu
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    
+    document.getElementById('btn-mobile-menu').addEventListener('click', () => {
+        sidebar.classList.add('open');
+        overlay.classList.remove('hidden');
+    });
+    
+    document.getElementById('btn-close-sidebar').addEventListener('click', () => {
+        sidebar.classList.remove('open');
+        overlay.classList.add('hidden');
+    });
+    
+    overlay.addEventListener('click', () => {
+        sidebar.classList.remove('open');
+        overlay.classList.add('hidden');
     });
     
     // Search

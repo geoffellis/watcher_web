@@ -1,9 +1,9 @@
-# Arlo Watcher Web App - Ongoing Requirements & Walkthrough
+# Watcher Web App - Ongoing Requirements & Walkthrough
 
-This document serves as the official record of features, architecture, and change history for the Arlo Watcher Web App.
+This document serves as the official record of features, architecture, and change history for the Watcher Web App.
 
 ## 🎯 Project Overview
-A self-hosted, real-time video monitoring dashboard for Arlo camera footage. It integrates with an external person-detection service to highlight events and provide a premium user experience.
+A self-hosted, real-time video monitoring dashboard for security camera footage. It integrates with an external person-detection service to highlight events and provide a premium user experience.
 
 ---
 
@@ -20,6 +20,9 @@ A self-hosted, real-time video monitoring dashboard for Arlo camera footage. It 
 - **Smart Icons**:
     - General person detections show a **green person icon**.
     - Clips tagged as **"family"** show a **red heart/family icon**.
+- **Flexible Grid**: 
+    - **Toggle**: Users can switch between **Small** (high density) and **Large** (featured) card sizes via a grid icon in the header.
+    - **Intelligent Defaults**: Defaults to Small on desktop/web and Large on mobile devices.
 - **Compact View**: Tags are overlaid on the bottom-right of video cards to reduce card height and maximize density.
 
 ### 🧠 Features
@@ -45,9 +48,11 @@ A self-hosted, real-time video monitoring dashboard for Arlo camera footage. It 
 ## 🌟 Change Log & Walkthrough
 
 ### Phase 2: UI Refinement & Deployment (Current)
+- [x] **Branding**: Renamed the application to **Watcher**.
 - [x] **Smart Badges**: Added heart icon logic for "family" tagged clips.
 - [x] **Card Optimization**: Moved tags to thumbnail overlay and reduced card detail padding.
 - [x] **Highlights Toggle**: Added "Show Highlights" switch to toggle detection overlays.
+- [x] **Flexible Grid**: Implemented card size toggle with responsive defaults (Small/Desktop, Large/Mobile).
 - [x] **Linux Tooling**: Created Ubuntu deployment scripts (`install.sh`, `update.sh`, and systemd template).
 - [x] **Env Support**: Modified server to use `ARLO_DIR` environment variables.
 
@@ -70,4 +75,4 @@ A self-hosted, real-time video monitoring dashboard for Arlo camera footage. It 
 1. Push code to your Linux server.
 2. Run `./install.sh`.
 3. Edit `.env` to set your `ARLO_DIR`.
-4. Follow the instructions to start the `systemd` service.
+4. Follow the instructions to start the `watcher-web` systemd service.
