@@ -106,7 +106,7 @@ fi
 echo "⚙️  Installing systemd service..."
 SERVICE_FILE="/etc/systemd/system/$SERVICE_NAME.service"
 
-sudo cat <<EOF > $SERVICE_NAME.service
+cat <<EOF | sudo tee $SERVICE_NAME.service > /dev/null
 [Unit]
 Description=Watcher Web Dashboard
 After=network.target
