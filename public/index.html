@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arlo Watcher</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Top Navigation / Filter Bar -->
+        <header class="top-nav">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"></path><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                <h1>Arlo Watcher</h1>
+            </div>
+            
+            <div class="filter-controls">
+                <div class="filter-group">
+                    <button id="btn-filter-all" class="filter-btn active">All Events</button>
+                    <button id="btn-filter-person" class="filter-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        Person Detected
+                    </button>
+                </div>
+                
+                <div class="filter-group">
+                    <span id="date-filter-label" class="date-label">All Dates</span>
+                    <button id="btn-clear-date" class="icon-btn hidden" title="Clear Dates">&times;</button>
+                </div>
+                
+                <div class="filter-group">
+                    <input type="text" id="search-filter" class="search-input" placeholder="Search files...">
+                </div>
+
+                <div class="filter-group toggle-group">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="toggle-highlights" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <span class="toggle-label">Highlights</span>
+                </div>
+                
+                <button id="theme-toggle" class="icon-btn" title="Toggle Theme">
+                    <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                </button>
+            </div>
+        </header>
+
+        <div class="main-layout">
+            <!-- Sidebar (Desktop) / Bottom Nav (Mobile) -->
+            <aside class="sidebar">
+                <div class="sidebar-section">
+                    <h3>Calendar</h3>
+                    <div id="calendar-widget" class="calendar-widget">
+                        <!-- Calendar populated by JS -->
+                    </div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h3>Activity Stats <span class="stats-date" id="stats-date-label">All Dates</span></h3>
+                    <div class="stats-row">
+                        <div class="stat-box">
+                            <span class="stat-value" id="stat-total">0</span>
+                            <span class="stat-label">Total Clips</span>
+                        </div>
+                        <div class="stat-box highlight">
+                            <span class="stat-value" id="stat-person">0</span>
+                            <span class="stat-label">Persons</span>
+                        </div>
+                    </div>
+                    <!-- Simple Activity Graph -->
+                    <div class="activity-graph-container">
+                        <div class="activity-graph" id="activity-graph">
+                            <!-- Bars populated by JS -->
+                        </div>
+                        <div class="graph-labels">
+                            <span>12a</span><span>6a</span><span>12p</span><span>6p</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Video Feed -->
+            <main class="content-feed">
+                <div id="new-clips-banner" class="banner hidden">
+                    <span id="new-clips-text">New clips detected!</span>
+                    <button id="btn-refresh-feed">Refresh</button>
+                </div>
+                
+                <div id="loading-state" class="state-message">Loading videos...</div>
+                <div id="empty-state" class="state-message hidden">No videos found matching your filters.</div>
+                
+                <div id="video-grid" class="video-grid">
+                    <!-- Video cards populated by JS -->
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Lightbox / Video Player Modal -->
+    <div id="lightbox" class="modal hidden">
+        <div class="modal-overlay" id="lightbox-close-overlay"></div>
+        <div class="modal-content">
+            <button class="modal-close" id="lightbox-close">&times;</button>
+            
+            <div class="lightbox-layout">
+                <div class="lightbox-media">
+                    <div class="video-container">
+                        <video id="lightbox-video" controls autoplay muted></video>
+                    </div>
+                    <div class="snapshot-container hidden" id="lightbox-snapshot-container">
+                        <h4>Person Detected Snapshot</h4>
+                        <div class="canvas-wrapper">
+                            <img id="lightbox-img" src="" alt="Snapshot">
+                            <canvas id="lightbox-canvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lightbox-sidebar">
+                    <h2 id="lightbox-title" class="video-title">arlo_20260507_214506.mp4</h2>
+                    <div class="video-meta">
+                        <span id="lightbox-date">May 7, 2026 - 9:45 PM</span>
+                        <span id="lightbox-size">14 MB</span>
+                    </div>
+                    
+                    <div class="actions-row">
+                        <a id="lightbox-download" href="#" download class="action-btn">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                            Download
+                        </a>
+                        <button id="lightbox-delete" class="action-btn danger">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                            Delete
+                        </button>
+                    </div>
+                    
+                    <div class="tags-section">
+                        <h3>Tags</h3>
+                        <div id="lightbox-tags" class="tags-container">
+                            <!-- Tags populated here -->
+                        </div>
+                        <div class="tag-input-row">
+                            <input type="text" id="tag-input" placeholder="Add a tag...">
+                            <button id="btn-add-tag">Add</button>
+                        </div>
+                        <div class="suggested-tags">
+                            <span class="tag-suggestion">delivery</span>
+                            <span class="tag-suggestion">vehicle</span>
+                            <span class="tag-suggestion">animal</span>
+                            <span class="tag-suggestion">family</span>
+                        </div>
+                    </div>
+                    
+                    <div class="lightbox-nav">
+                        <button id="btn-prev-video" class="nav-btn">&larr; Previous</button>
+                        <button id="btn-next-video" class="nav-btn">Next &rarr;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Template for Video Card -->
+    <template id="video-card-template">
+        <div class="video-card">
+            <div class="card-thumbnail-container">
+                <img class="card-thumbnail" loading="lazy" src="" alt="Video thumbnail">
+                <div class="person-badge badge-container hidden">
+                    <!-- Icon will be inserted by JS (person or heart) -->
+                </div>
+                <div class="card-tags-overlay"></div>
+                <div class="play-overlay">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M8 5v14l11-7z"/></svg>
+                </div>
+            </div>
+            <div class="card-details">
+                <div class="card-time">10:45 AM</div>
+                <div class="card-date">May 7, 2026</div>
+            </div>
+        </div>
+    </template>
+
+    <script src="app.js"></script>
+</body>
+</html>
