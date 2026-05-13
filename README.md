@@ -48,7 +48,7 @@ A self-hosted, real-time video surveillance dashboard designed for monitoring lo
 
 ### 🐧 Linux (Ubuntu) Setup
 
-I have provided automated scripts for a production-ready deployment, aligned with the **TrackerNexus** standards.
+I have provided automated scripts for a production-ready deployment, aligned with the **TrackerNexus** standards and specifically labeled for the **watcher-web** component.
 
 1.  **Prerequisites**: Ensure `git` and `curl` are installed.
 2.  **Run Installer**:
@@ -56,20 +56,20 @@ I have provided automated scripts for a production-ready deployment, aligned wit
     chmod +x install.sh
     ./install.sh
     ```
-    *This will deploy the app to `/opt/watcher`, create a dedicated `watcher` system user, and generate a systemd service.*
+    *This will deploy the app to `/opt/watcher-web`, create a dedicated `watcher-web` system user, and generate a `watcher-web.service`.*
 3.  **Configure Environment**:
     Edit the production `.env` file:
     ```bash
-    sudo nano /opt/watcher/.env
+    sudo nano /opt/watcher-web/.env
     # Set ARLO_DIR=/path/to/your/videos
     ```
 4.  **Start Service**:
     ```bash
-    sudo systemctl start watcher
-    sudo systemctl status watcher
+    sudo systemctl start watcher-web
+    sudo systemctl status watcher-web
     ```
 5.  **Updates**:
-    To update the app in the future, navigate to `/opt/watcher` and run:
+    To update the app in the future, navigate to `/opt/watcher-web` and run:
     ```bash
     sudo ./update.sh
     ```

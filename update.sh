@@ -5,8 +5,9 @@
 
 set -e
 
-INSTALL_DIR="/opt/watcher"
-APP_USER="watcher"
+INSTALL_DIR="/opt/watcher-web"
+APP_USER="watcher-web"
+SERVICE_NAME="watcher-web"
 
 if [ "$PWD" != "$INSTALL_DIR" ]; then
     echo "⚠️  Moving to $INSTALL_DIR..."
@@ -39,11 +40,11 @@ if [ -f "tags.json" ]; then
 fi
 
 # 4. Restart the Service
-echo "♻️  Restarting Watcher service..."
-sudo systemctl restart watcher
+echo "♻️  Restarting $SERVICE_NAME service..."
+sudo systemctl restart "$SERVICE_NAME"
 
 echo ""
 echo "✨ Update Complete! Watcher is now running the latest version."
 echo "--------------------------------------------------------"
-echo "Status: $(sudo systemctl is-active watcher)"
+echo "Status: $(sudo systemctl is-active $SERVICE_NAME)"
 echo "--------------------------------------------------------"

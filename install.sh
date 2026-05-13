@@ -5,8 +5,9 @@
 
 set -e
 
-INSTALL_DIR="/opt/watcher"
-APP_USER="watcher"
+INSTALL_DIR="/opt/watcher-web"
+APP_USER="watcher-web"
+SERVICE_NAME="watcher-web"
 REQUIRED_NODE="20.0.0" # Minimum LTS
 
 echo "🚀 Starting Watcher Installation (Hardened)..."
@@ -32,9 +33,9 @@ echo "✅ Node.js $(node -v) OK ($NODE_BIN)"
 
 # ─── 2. Stop Service (if running) ────────────────────────────────────────────
 
-if systemctl is-active --quiet watcher 2>/dev/null; then
-    echo "🛑 Stopping running watcher service..."
-    sudo systemctl stop watcher
+if systemctl is-active --quiet "$SERVICE_NAME" 2>/dev/null; then
+    echo "🛑 Stopping running $SERVICE_NAME service..."
+    sudo systemctl stop "$SERVICE_NAME"
 fi
 
 # ─── 3. Deploy to Production Directory ───────────────────────────────────────
@@ -103,9 +104,9 @@ fi
 # ─── 9. Systemd Service ───────────────────────────────────────────────────────
 
 echo "⚙️  Installing systemd service..."
-SERVICE_FILE="/etc/systemd/system/watcher.service"
+SERVICE_FILE="/etc/systemd/system/$SERVICE_NAME.service"
 
-sudo cat <<EOF > watcher.service
+sudo cat <<EOF > $SERVICE_NAME.service
 [Unit]
 Description=Watcher Web Dashboard
 After=network.target
@@ -122,9 +123,9 @@ Restart=on-failure
 WantedBy=multi-user.target
 EOF
 
-sudo mv watcher.service "$SERVICE_FILE"
+sudo mv $SERVICE_NAME.service "$SERVICE_FILE"
 sudo systemctl daemon-reload
-sudo systemctl enable watcher
+sudo systemctl enable $SERVICE_NAME
 
 # ─── Done ────────────────────────────────────────────────────────────────────
 
@@ -133,6 +134,6 @@ echo "✨ Installation Complete!"
 echo "--------------------------------------------------------"
 echo "Next Steps:"
 echo "1. sudo nano $INSTALL_DIR/.env  (Set your ARLO_DIR)"
-echo "2. sudo systemctl start watcher"
-echo "3. sudo systemctl status watcher"
+echo "2. sudo systemctl start $SERVICE_NAME"
+echo "3. sudo systemctl status $SERVICE_NAME"
 echo "--------------------------------------------------------"
